@@ -6,6 +6,9 @@ using Unity.Collections;
 
 public class PlayerNetwork : NetworkBehaviour
 {
+    [SerializeField] Transform spawnedObject;
+    private Transform spawnedObjectTransform;
+
     private NetworkVariable<MyCustomData> randomNumber = new NetworkVariable<MyCustomData>(
         new MyCustomData
     {
@@ -52,12 +55,25 @@ public class PlayerNetwork : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.T))
         {
+
+            spawnedObjectTransform =  Instantiate(spawnedObject);
+            spawnedObjectTransform.GetComponent<NetworkObject>().Spawn(true);
+            //TestServerRpc(new ServerRpcParams());
+            //TestClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new List<ulong> { 0 } } });
+            /*
             randomNumber.Value = new MyCustomData
             {
                 _int = Random.Range(0, 100),
                 _bool = false,
                 msg = "Hello Foks",
             };
+            */
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            spawnedObjectTransform.GetComponent<NetworkObject>().Despawn(true);
+            Destroy(spawnedObject.gameObject);
         }
 
         Vector3 moveDir = new Vector3(0, 0, 0);
@@ -70,4 +86,28 @@ public class PlayerNetwork : NetworkBehaviour
         float moveSpeed = 3f;
         transform.position += moveDir * moveSpeed * Time.deltaTime;
     }
+
+
+    //Also both RPC must be inside an NetworkBehaviour
+    //need to Write below line to use ServerRpc
+    [ServerRpc]
+    //To use ServerRPC function name must end with "ServerRpc" suffix.
+    //ServerRpc only runs on Server even if it is called from client.
+    //Host works as both client and server
+    private void TestServerRpc(ServerRpcParams serverRpcParams)
+    {
+        Debug.Log("TestServerRpc" + OwnerClientId + "; " + serverRpcParams.Receive.SenderClientId);
+    }
+
+    //Unity also have Client RPC if a function is called from server that is ClientRPC then the functions will run on every object of version client.
+    //Can send to one perticular client using their ClientId.
+    [ClientRpc]
+    private void TestClientRpc(ClientRpcParams clientRpcParams)
+    {
+        Debug.Log("TestClientRpc");
+    }
+
+
+
+    //Host is both client and server so it host calls ClientRpc then function will run on Client as well as on Host.
 }

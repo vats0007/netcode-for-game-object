@@ -157,7 +157,8 @@ PlayerSettings:
   resetResolutionOnWindowResize: 0
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
-  applicationIdentifier: {}
+  applicationIdentifier:
+    Standalone: com.KryptonE.Netcode-For-GameObject
   buildNumber:
     Standalone: 0
     VisionOS: 0
@@ -747,7 +748,7 @@ PlayerSettings:
   hmiLogStartupTiming: 0
   hmiCpuConfiguration: 
   apiCompatibilityLevel: 6
-  activeInputHandler: 0
+  activeInputHandler: 2
   windowsGamepadBackendHint: 0
   cloudProjectId: 823247a9-892e-424b-b5d8-04d334c7f9f8
   framebufferDepthMemorylessMode: 0
